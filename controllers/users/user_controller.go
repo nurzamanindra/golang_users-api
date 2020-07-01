@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nurzamanindra/bookstore_users-api/domain/users"
+	"github.com/nurzamanindra/bookstore_users-api/services"
 )
 
 func CreateUser(c *gin.Context) {
@@ -20,14 +21,17 @@ func CreateUser(c *gin.Context) {
 	}
 	if err := json.Unmarshal(bytes, &user); err != nil {
 		//TODO: Handle Json Error
-		fmt.Println(err)
+		fmt.Println(err.Error())
+		return
+	}
+	result, saveErr := services.CreateUser(user)
+	if saveErr != nil {
+		//TODO : Handle user creator error
 		return
 	}
 	fmt.Println(user)
 
-	// fmt.Println(string(bytes))
-
-	c.String(http.StatusNotImplemented, "Create user function is not implemented! Implement me!")
+	c.JSON(http.StatusCreated, result)
 }
 
 func GetUser(c *gin.Context) {
