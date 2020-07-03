@@ -8,10 +8,9 @@ import (
 )
 
 const (
-	indexUniqueEmail = "email_UNIQUE"
-	errorNoRows      = "no rows in result set"
-	queryInsertUser  = "INSERT INTO users(first_name, last_name, email, date_created) VALUES (?, ?, ?, ?);"
-	queryGetUser     = "SELECT id, first_name, last_name, email, date_created from users WHERE id=?;"
+	queryInsertUser = "INSERT INTO users(first_name, last_name, email, date_created) VALUES (?, ?, ?, ?);"
+	queryGetUser    = "SELECT id, first_name, last_name, email, date_created from users WHERE id=?;"
+	queryUpdateUser = "UPDATE users SET first_name=?, last_name=?, email=? WHERE id=?;"
 )
 
 //mock database data
@@ -51,4 +50,18 @@ func (user *User) Save() *errors.RestErr {
 	}
 	user.Id = userID
 	return nil
+}
+
+func (user *User) Update() *errors.RestErr {
+	stmt, err := users_db.Client.Prepare(queryUpdateUser)
+	if err != nil {
+		return errors.NewInternalServerError(err.Error())
+	}
+	defer stmt.Close()
+	_, updateErr := stmt.Exec(user.FirstName, user.LastName, user.Email, user.Id)
+	if updateErr != nil {
+		return mysql_utils.ParseError(updateErr)
+	}
+	return nil
+
 }
