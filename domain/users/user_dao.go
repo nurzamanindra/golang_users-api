@@ -2,9 +2,18 @@ package users
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/nurzamanindra/bookstore_users-api/datasources/mysql/users_db"
 	"github.com/nurzamanindra/bookstore_users-api/utils/date_utils"
 	"github.com/nurzamanindra/bookstore_users-api/utils/errors"
+)
+
+const (
+	indexUniqueEmail = "email_UNIQUE"
+	errorNoRows      = "no rows in result set"
+	queryInsertUser  = "INSERT INTO users(first_name, last_name, email, date_created) VALUES (?, ?, ?, ?);"
+	queryGetUser     = "SELECT id, first_name, last_name, email, date_created from users WHERE id=?;"
 )
 
 //mock database data
@@ -13,29 +22,42 @@ var (
 )
 
 func (user *User) Get() *errors.RestErr {
-	result := userDB[user.Id]
-	if result == nil {
-		return errors.NewNotFoundError(fmt.Sprintf("User %d not found", user.Id))
+	stmt, err := users_db.Client.Prepare(queryGetUser)
+	if err != nil {
+		return errors.NewInternalServerError(err.Error())
 	}
-	user.Id = result.Id
-	user.FirstName = result.FirstName
-	user.LastName = result.LastName
-	user.Email = result.Email
-	user.DateCreated = result.DateCreated
+	defer stmt.Close()
+	result := stmt.QueryRow(user.Id)
+
+	if err := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.DateCreated); err != nil {
+		if strings.Contains(err.Error(), errorNoRows) {
+			return errors.NewNotFoundError(fmt.Sprintf("User %d not found", user.Id))
+		}
+		return errors.NewInternalServerError(fmt.Sprintf("Error when trying to get user %d: %s", user.Id, err.Error()))
+	}
 
 	return nil
 }
 
 func (user *User) Save() *errors.RestErr {
-	current := userDB[user.Id]
-	if current != nil {
-		if current.Email == user.Email {
-			return errors.NewBadRequestError(fmt.Sprintf("Email %s already registered", user.Email))
-		}
-		return errors.NewBadRequestError(fmt.Sprintf("user %d already exists", user.Id))
+	stmt, err := users_db.Client.Prepare(queryInsertUser)
+	if err != nil {
+		return errors.NewInternalServerError(err.Error())
 	}
-
+	defer stmt.Close()
 	user.DateCreated = date_utils.GetNowString()
-	userDB[user.Id] = user
+	result, err := stmt.Exec(user.FirstName, user.LastName, user.Email, user.DateCreated)
+	if err != nil {
+		if strings.Contains(err.Error(), indexUniqueEmail) {
+			return errors.NewBadRequestError(fmt.Sprintf("Email %s is already exists", user.Email))
+		}
+		return errors.NewInternalServerError(fmt.Sprintf("error when trying to save user: %s", err.Error()))
+	}
+	userID, err := result.LastInsertId()
+
+	if err != nil {
+		return errors.NewInternalServerError(fmt.Sprintf("error when trying to save user: %s", err.Error()))
+	}
+	user.Id = userID
 	return nil
 }
