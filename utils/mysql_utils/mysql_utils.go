@@ -7,11 +7,11 @@ import (
 	"github.com/nurzamanindra/bookstore_users-api/utils/errors"
 )
 
-const(
-	errorNoRows      = "no rows in result set"
+const (
+	errorNoRows = "no rows in result set"
 )
 
-func ParseError(err error) *errors.RestErr{
+func ParseError(err error) *errors.RestErr {
 	sqlErr, ok := err.(*mysql.MySQLError)
 	if !ok {
 		if strings.Contains(err.Error(), errorNoRows) {
@@ -19,7 +19,7 @@ func ParseError(err error) *errors.RestErr{
 		}
 		return errors.NewInternalServerError("error parsing database response")
 	}
-	switch sqlErr.Number{
+	switch sqlErr.Number {
 	case 1062:
 		return errors.NewBadRequestError(sqlErr.Message)
 	}
