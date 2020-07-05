@@ -32,8 +32,8 @@ func (user *User) Validate() *errors.RestErr {
 		return errors.NewBadRequestError("Invalid Email Address")
 	}
 
-	if user.Password == "" {
-		return errors.NewBadRequestError("Invalid password, can not empty")
-	}
+	// if user.Password == "" {
+	// 	return errors.NewBadRequestError("Invalid password, can not empty")
+	// }
 	return nil
 }
