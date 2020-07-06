@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nurzamanindra/bookstore_users-api/domain/users"
-	"github.com/nurzamanindra/bookstore_users-api/services"
-	"github.com/nurzamanindra/bookstore_users-api/utils/errors"
+	"github.com/nurzamanindra/golang_users-api/domain/users"
+	"github.com/nurzamanindra/golang_users-api/services"
+	"github.com/nurzamanindra/golang_users-api/utils/errors"
 )
 
 func CreateUser(c *gin.Context) {

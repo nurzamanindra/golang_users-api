@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/nurzamanindra/bookstore_users-api/app"
+	"github.com/nurzamanindra/golang_users-api/app"
 )
 
 func main() {
