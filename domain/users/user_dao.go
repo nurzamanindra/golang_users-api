@@ -4,10 +4,10 @@ import (
 	e "errors"
 	"fmt"
 
-	"github.com/nurzamanindra/bookstore_users-api/datasources/mysql/users_db"
-	"github.com/nurzamanindra/bookstore_users-api/logger"
-	"github.com/nurzamanindra/bookstore_users-api/utils/errors"
-	"github.com/nurzamanindra/bookstore_users-api/utils/mysql_utils"
+	"github.com/nurzamanindra/golang_users-api/datasources/mysql/users_db"
+	"github.com/nurzamanindra/golang_users-api/logger"
+	"github.com/nurzamanindra/golang_users-api/utils/errors"
+	"github.com/nurzamanindra/golang_users-api/utils/mysql_utils"
 )
 
 const (

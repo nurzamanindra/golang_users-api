@@ -3,7 +3,7 @@ package users
 import (
 	"strings"
 
-	"github.com/nurzamanindra/bookstore_users-api/utils/errors"
+	"github.com/nurzamanindra/golang_users-api/utils/errors"
 )
 
 const (

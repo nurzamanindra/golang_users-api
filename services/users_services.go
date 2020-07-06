@@ -1,10 +1,10 @@
 package services
 
 import (
-	"github.com/nurzamanindra/bookstore_users-api/domain/users"
-	"github.com/nurzamanindra/bookstore_users-api/utils/crypto_utils"
-	"github.com/nurzamanindra/bookstore_users-api/utils/date_utils"
-	"github.com/nurzamanindra/bookstore_users-api/utils/errors"
+	"github.com/nurzamanindra/golang_users-api/domain/users"
+	"github.com/nurzamanindra/golang_users-api/utils/crypto_utils"
+	"github.com/nurzamanindra/golang_users-api/utils/date_utils"
+	"github.com/nurzamanindra/golang_users-api/utils/errors"
 )
 
 var (
