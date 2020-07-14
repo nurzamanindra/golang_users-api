@@ -1,11 +1,13 @@
 package users
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nurzamanindra/golang_users-api/domain/users"
+	"github.com/nurzamanindra/golang_users-api/logger"
 	"github.com/nurzamanindra/golang_users-api/services"
 	"github.com/nurzamanindra/golang_users-api/utils/errors"
 )
@@ -105,12 +107,12 @@ func Login(c *gin.Context) {
 		c.JSON(restErr.Status, restErr)
 		return
 	}
-
+	logger.Info(fmt.Sprintf("%+v", request))
 	user, err := services.UserService.LoginUser(request)
 	if err != nil {
 		c.JSON(err.Status, err)
 		return
 	}
-
+	logger.Info(fmt.Sprintf("response --> %+v", user))
 	c.JSON(http.StatusFound, user.Marshall(c.GetHeader("X-Public") == "true"))
 }
